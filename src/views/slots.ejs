@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<div class="page-head">
+  <h1>Book an appointment</h1>
+  <form method="get" action="/slots" class="filter">
+    <input type="date" name="date" value="<%= date %>">
+    <button type="submit" class="btn btn-small">Filter</button>
+    <% if (date) { %><a href="/slots">Clear</a><% } %>
+  </form>
+</div>
+
+<% if (slots.length === 0) { %>
+  <p class="empty">No available slots<%= date ? ' on this date' : '' %>.</p>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Service</th><th>Date</th><th>Time</th><th>Notes for the provider</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% slots.forEach(function (slot) { %>
+          <tr>
+            <td><%= slot.service_name %> <span class="badge"><%= slot.duration_min %> min</span></td>
+            <td><%= slot.slot_date %></td>
+            <td><%= slot.start_time.slice(0, 5) %> – <%= slot.end_time.slice(0, 5) %></td>
+            <td colspan="2">
+              <form method="post" action="/bookings" class="row-form">
+                <input type="hidden" name="slot_id" value="<%= slot.id %>">
+                <input type="text" name="notes" placeholder="Optional">
+                <button type="submit" class="btn btn-small">Book</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

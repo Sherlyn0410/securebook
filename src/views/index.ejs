@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <h1>Book your appointment online</h1>
+  <p>Pick a service, choose a time that suits you, and manage your bookings in one place.</p>
+  <% if (currentUser) { %>
+    <a class="btn" href="<%= currentUser.role === 'admin' ? '/admin' : '/slots' %>">Go to my account</a>
+  <% } else { %>
+    <a class="btn" href="/register">Create an account</a>
+    <a class="btn btn-ghost" href="/login">Log in</a>
+  <% } %>
+</section>
+
+<h2>Our services</h2>
+<div class="cards">
+  <% services.forEach(function (service) { %>
+    <div class="card">
+      <h3><%= service.name %></h3>
+      <p class="muted"><%= service.description %></p>
+      <span class="badge"><%= service.duration_min %> min</span>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

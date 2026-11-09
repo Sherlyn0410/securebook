@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+
+<div class="form-card">
+  <h1>Create an account</h1>
+  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
+  <form method="post" action="/register">
+    <label>Full name
+      <input type="text" name="name" value="<%= form.name || '' %>" required>
+    </label>
+    <label>Email
+      <input type="email" name="email" value="<%= form.email || '' %>" required>
+    </label>
+    <label>Phone number
+      <input type="tel" name="phone" value="<%= form.phone || '' %>">
+    </label>
+    <label>Password
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit" class="btn btn-block">Register</button>
+  </form>
+  <p class="muted">Already registered? <a href="/login">Log in</a></p>
+</div>
+
+<%- include('partials/footer') %>

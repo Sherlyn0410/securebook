@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<p><a href="/bookings">← Back to my bookings</a></p>
+
+<div class="detail-card">
+  <div class="detail-head">
+    <h1>Booking #<%= booking.id %></h1>
+    <span class="status status-<%= booking.status %>"><%= booking.status %></span>
+  </div>
+
+  <dl class="details">
+    <dt>Service</dt><dd><%= booking.service_name %></dd>
+    <dt>Date</dt><dd><%= booking.slot_date %></dd>
+    <dt>Time</dt><dd><%= booking.start_time.slice(0, 5) %> – <%= booking.end_time.slice(0, 5) %></dd>
+    <dt>Name</dt><dd><%= booking.contact_name %></dd>
+    <dt>Email</dt><dd><%= booking.contact_email %></dd>
+    <dt>Phone</dt><dd><%= booking.contact_phone %></dd>
+    <%# v1 baseline: notes are printed without HTML encoding (stored XSS, report 2.1.4.3) %>
+    <dt>Notes</dt><dd><%- booking.notes || '-' %></dd>
+  </dl>
+
+  <% if (booking.status === 'booked') { %>
+    <form method="post" action="/bookings/<%= booking.id %>/cancel">
+      <button type="submit" class="btn btn-danger">Cancel this booking</button>
+    </form>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

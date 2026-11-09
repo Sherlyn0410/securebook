@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<div class="page-head">
+  <h1>My bookings</h1>
+  <form method="get" action="/bookings" class="filter">
+    <input type="date" name="date" value="<%= date %>">
+    <button type="submit" class="btn btn-small">Filter</button>
+    <% if (date) { %><a href="/bookings">Clear</a><% } %>
+  </form>
+</div>
+
+<% if (bookings.length === 0) { %>
+  <p class="empty">No bookings yet. <a href="/slots">Book an appointment</a></p>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Booking</th><th>Service</th><th>Date</th><th>Time</th><th>Contact</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% bookings.forEach(function (b) { %>
+          <tr>
+            <td><a href="/bookings/<%= b.id %>">#<%= b.id %></a></td>
+            <td><%= b.service_name %></td>
+            <td><%= b.slot_date %></td>
+            <td><%= b.start_time.slice(0, 5) %></td>
+            <td><%= b.contact_name %><br><span class="muted"><%= b.contact_phone %></span></td>
+            <td><span class="status status-<%= b.status %>"><%= b.status %></span></td>
+            <td>
+              <% if (b.status === 'booked') { %>
+                <form method="post" action="/bookings/<%= b.id %>/cancel" class="inline">
+                  <button type="submit" class="btn btn-small btn-danger">Cancel</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

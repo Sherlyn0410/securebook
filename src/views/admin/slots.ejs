@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+
+<h1>Manage schedule</h1>
+
+<div class="two-col">
+  <div class="form-card flat">
+    <h2>Add a time slot</h2>
+    <form method="post" action="/admin/slots">
+      <label>Service
+        <select name="service_id">
+          <% services.forEach(function (s) { %>
+            <option value="<%= s.id %>"><%= s.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Date <input type="date" name="slot_date" required></label>
+      <div class="pair">
+        <label>Start <input type="time" name="start_time" required></label>
+        <label>End <input type="time" name="end_time" required></label>
+      </div>
+      <button type="submit" class="btn btn-block">Add slot</button>
+    </form>
+  </div>
+
+  <div class="form-card flat">
+    <h2>Add a service</h2>
+    <form method="post" action="/admin/services">
+      <label>Name <input type="text" name="name" required></label>
+      <label>Description <input type="text" name="description"></label>
+      <label>Duration (minutes) <input type="number" name="duration_min" value="30" min="5" required></label>
+      <button type="submit" class="btn btn-block">Add service</button>
+    </form>
+  </div>
+</div>
+
+<h2>All time slots</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Service</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% slots.forEach(function (s) { %>
+        <tr>
+          <td><%= s.service_name %></td>
+          <td><%= s.slot_date %></td>
+          <td><%= s.start_time.slice(0, 5) %> – <%= s.end_time.slice(0, 5) %></td>
+          <td><%= s.booked > 0 ? 'Booked' : 'Open' %></td>
+          <td>
+            <form method="post" action="/admin/slots/<%= s.id %>/delete" class="inline">
+              <button type="submit" class="btn btn-small btn-ghost">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

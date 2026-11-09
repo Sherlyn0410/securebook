@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+
+<h1>Manage users</h1>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% users.forEach(function (u) { %>
+        <tr>
+          <td><%= u.id %></td>
+          <td><%= u.name %></td>
+          <td><%= u.email %></td>
+          <td><%= u.phone %></td>
+          <td><span class="badge"><%= u.role %></span></td>
+          <td><%= u.is_active ? 'Active' : 'Deactivated' %></td>
+          <td>
+            <form method="post" action="/admin/users/<%= u.id %>/toggle" class="inline">
+              <button type="submit" class="btn btn-small btn-ghost"><%= u.is_active ? 'Deactivate' : 'Activate' %></button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

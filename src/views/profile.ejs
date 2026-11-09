@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<div class="form-card">
+  <h1>My profile</h1>
+  <form method="post" action="/profile">
+    <label>Full name
+      <input type="text" name="name" value="<%= profile.name %>">
+    </label>
+    <label>Email
+      <input type="email" value="<%= profile.email %>" disabled>
+    </label>
+    <label>Phone number
+      <input type="tel" name="phone" value="<%= profile.phone || '' %>">
+    </label>
+    <button type="submit" class="btn btn-block">Save changes</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
