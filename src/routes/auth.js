@@ -69,7 +69,8 @@ router.get('/profile', requireLogin, async (req, res) => {
 });
 
 router.post('/profile', requireLogin, async (req, res) => {
-  const { name, phone } = req.body;
+  const { name, phone_prefix, phone_number } = req.body;
+  const phone = phone_number ? `${phone_prefix}-${phone_number}` : '';
 
   // v1 baseline: no CSRF token and no validation (report 2.1.2.2, 2.1.4.1)
   await pool.query(

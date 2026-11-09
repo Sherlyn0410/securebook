@@ -86,6 +86,9 @@ input, select, textarea {
   border: 1px solid var(--border); border-radius: 10px; background: #fff;
 }
 input:focus, select:focus { outline: 2px solid var(--primary-ring); border-color: var(--primary); }
+.field { margin-bottom: 18px; }
+.field-label { display: block; font-size: 1rem; font-weight: 600; }
+.phone-group { display: grid; grid-template-columns: 110px 1fr; gap: 10px; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
 

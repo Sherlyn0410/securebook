@@ -9,9 +9,25 @@
     <label>Email
       <input type="email" value="<%= profile.email %>" disabled>
     </label>
-    <label>Phone number
-      <input type="tel" name="phone" value="<%= profile.phone || '' %>">
-    </label>
+    <%
+      // Split a saved phone like "012-3456789" into prefix and number
+      const phoneParts = (profile.phone || '').split('-');
+      const phonePrefix = phoneParts.length > 1 ? phoneParts[0] : '012';
+      const phoneNumber = phoneParts.length > 1 ? phoneParts.slice(1).join('') : (profile.phone || '');
+      const prefixes = ['010', '011', '012', '013', '014', '015', '016', '017', '018', '019'];
+      if (!prefixes.includes(phonePrefix)) prefixes.unshift(phonePrefix);
+    %>
+    <div class="field">
+      <span class="field-label">Phone number</span>
+      <div class="phone-group">
+        <select name="phone_prefix" aria-label="Phone prefix">
+          <% prefixes.forEach(function (p) { %>
+            <option value="<%= p %>" <%= p === phonePrefix ? 'selected' : '' %>><%= p %></option>
+          <% }) %>
+        </select>
+        <input type="tel" name="phone_number" value="<%= phoneNumber %>" placeholder="3456789" aria-label="Phone number">
+      </div>
+    </div>
     <button type="submit" class="btn btn-block">Save changes</button>
   </form>
 </div>
