@@ -1,117 +1,119 @@
-# SecureBook – Appointment Booking System (v1 baseline)
+# SecureBook
 
-6005CEM / 6000CMD Security – CW2 group project.
+Appointment booking website for our 6005CEM Security coursework (CW2).
 
-This is the **v1 baseline**: a working booking website with **deliberate security flaws**.
-The group uses it to capture the "before" evidence for Chapter 2 of the report, then each
-member fixes their own issues for Chapter 3. **Do not deploy v1 on a public server.**
+Users can register, book a time slot, see their bookings and cancel them. The admin manages services, time slots, bookings and user accounts.
 
-## Tech stack
+**Note:** this is the v1 baseline. It has security problems on purpose so we can test and document them before fixing them. Don't host this version online.
 
-- Node.js + Express 5 (server)
-- EJS templates (pages)
-- MySQL 8 or MariaDB (database)
+Built with Node.js (Express), EJS and MySQL.
 
-## Setup on macOS
+## Setup
 
-### 1. Install Node.js
+You need Node.js (LTS version) and MySQL 8 or MariaDB.
 
-Download the **LTS** installer from https://nodejs.org and run it. Check in Terminal:
+### macOS
 
-```bash
-node -v
-npm -v
-```
+1. Install Node.js LTS from https://nodejs.org
+2. Install and start MySQL with Homebrew:
+   ```bash
+   brew install mysql@8.4
+   brew services start mysql@8.4
+   ```
+3. Import the database (just press Enter at the password prompt if root has no password):
+   ```bash
+   cd securebook
+   mysql -h 127.0.0.1 -u root -p < db/schema.sql
+   ```
+4. Start the app:
+   ```bash
+   cp .env.example .env
+   npm install
+   npm run dev
+   ```
 
-### 2. Get a MySQL database running (pick one)
+Using XAMPP on Mac instead? Start MySQL in XAMPP and use `/Applications/XAMPP/xamppfiles/bin/mysql` in step 3.
 
-**Option A – Homebrew**
+### Windows
 
-```bash
-brew install mysql
-brew services start mysql
-```
+1. Install Node.js LTS from https://nodejs.org
+2. Install XAMPP from https://www.apachefriends.org, open the XAMPP Control Panel and start **MySQL**.
+3. Import the database. Either:
+   - **phpMyAdmin:** also start **Apache**, go to http://localhost/phpmyadmin, click **Import**, choose `db/schema.sql` and click **Import**, or
+   - **Command Prompt** (not PowerShell, because `<` doesn't work there):
+     ```bat
+     cd path\to\securebook
+     C:\xampp\mysql\bin\mysql.exe -u root < db\schema.sql
+     ```
+4. Start the app in Command Prompt:
+   ```bat
+   copy .env.example .env
+   npm install
+   npm run dev
+   ```
 
-The user is `root` with no password by default.
+If PowerShell says "running scripts is disabled on this system" when you run npm, just use Command Prompt.
 
-**Option B – XAMPP**
+If you installed MySQL with the MySQL Installer instead of XAMPP, the path in step 3 is usually `"C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe" -u root -p`.
 
-Start **MySQL** in the XAMPP control panel. The user is `root` with no password.
-You can import the schema in phpMyAdmin instead of step 3.
-
-### 3. Create the database and demo data
-
-```bash
-cd securebook
-mysql -u root -p < db/schema.sql      # press Enter if there is no password
-```
-
-> Running `schema.sql` again **drops and recreates** the database. Use it to reset the demo data.
-
-### 4. Configure and run
-
-```bash
-cp .env.example .env     # then edit DB_PASSWORD if you set one
-npm install
-npm run dev              # restarts automatically when you save a file
-```
+### After setup
 
 Open http://localhost:3000
 
+- If your MySQL root user has a password, put it in `.env` (`DB_PASSWORD=yourpassword`).
+- To reset all the demo data, import `db/schema.sql` again. It drops and recreates the database.
+
 ## Demo accounts
 
-| Role  | Email                  | Password  | Owns booking |
-|-------|------------------------|-----------|--------------|
-| Admin | admin@securebook.test  | admin123  | –            |
-| User  | alice@example.com      | alice123  | #1001        |
-| User  | bob@example.com        | bob123    | #1002        |
+| Role  | Email                 | Password | Booking |
+|-------|-----------------------|----------|---------|
+| Admin | admin@securebook.test | admin123 | -       |
+| User  | alice@example.com     | alice123 | #1001   |
+| User  | bob@example.com       | bob123   | #1002   |
 
-## Project structure
+## Folder structure
 
 ```
-db/schema.sql              tables + demo data
-src/app.js                 Express setup, session, error handler
-src/db.js                  MySQL connection pool
-src/middleware/auth.js     login check
-src/routes/auth.js         register, login, logout, profile
-src/routes/bookings.js     slots, book, my bookings, view, cancel
-src/routes/admin.js        dashboard, schedule, users
-src/views/                 EJS pages
-public/css/style.css       styling
+db/schema.sql            tables and demo data
+src/app.js               express setup, sessions, error handler
+src/db.js                mysql connection
+src/middleware/auth.js   login check
+src/routes/auth.js       register, login, logout, profile
+src/routes/bookings.js   slots, booking, my bookings, cancel
+src/routes/admin.js      admin dashboard, schedule, users
+src/views/               ejs pages
+public/css/style.css     styles
 ```
 
-## Known v1 vulnerabilities (for the report)
+## Known issues in v1
 
-Each flaw is marked in the code with a `v1 baseline` comment.
+These are what we test in Chapter 2 of the report. Each one is marked in the code with a `v1 baseline` comment.
 
-| Report | Flaw | Where | How to show it |
-|---|---|---|---|
-| 2.1.1.1 | Plain text passwords | `routes/auth.js` register | Open the `users` table in phpMyAdmin / MySQL Workbench |
-| 2.1.1.2 | No password policy | `routes/auth.js` register | Register with password `1` |
-| 2.1.1.3 | No login rate limit + user enumeration | `routes/auth.js` login | Burp Intruder on POST /login; compare "No account found" vs "Incorrect password" |
-| 2.1.2.1 | No session timeout / no ID regeneration | `app.js`, login | DevTools → Application → Cookies: `connect.sid` is the same before and after login |
-| 2.1.2.2 | No CSRF token | all POST forms | External HTML page that auto-submits `POST /bookings/1002/cancel` |
-| 2.1.3.1 | IDOR on bookings | `routes/bookings.js` | Log in as Alice, open `/bookings/1002` or cancel it in Burp Repeater |
-| 2.1.3.2 | No role check on admin | `middleware/auth.js`, `routes/admin.js` | Log in as Alice, open `/admin` |
-| 2.1.4.1 | No input validation | `POST /bookings` | Burp: change `slot_id` to `1` (yesterday's slot) and send a 5,000-character note |
-| 2.1.4.2 | SQL injection | `GET /bookings?date=` | `/bookings?date=' OR '1'='1` shows every customer's bookings |
-| 2.1.4.3 | Stored XSS | booking notes | Book with note `<script>alert('XSS')</script>`, then open `/admin` |
-| 2.1.5 | Stack trace on errors | `app.js` error handler | Burp: book with `slot_id=999` |
-| 2.1.6 | Booking abuse | `POST /bookings` | Burp Intruder books every slot in seconds |
-| 2.1.7 | No audit logging | whole app | Nothing is recorded after failed logins |
-| 2.1.8.1 | Plain HTTP | whole app | Wireshark on the loopback interface (lo0) shows the login form in clear text |
-| 2.1.8.2 | Insecure cookie + headers | `app.js` | DevTools: cookie has no HttpOnly/Secure/SameSite; header `X-Powered-By: Express` |
-| 2.1.9 | No privacy notice | register page | Screenshot of the register page |
+| Report | Issue | How to test |
+|---|---|---|
+| 2.1.1.1 | Passwords saved in plain text | Look at the `users` table |
+| 2.1.1.2 | No password rules | Register with password `1` |
+| 2.1.1.3 | No login limit, error messages reveal which emails exist | Burp Intruder on POST /login |
+| 2.1.2.1 | Session never expires, same session ID after login | DevTools > Application > Cookies |
+| 2.1.2.2 | No CSRF token on forms | HTML page on another site that auto-submits a cancel request |
+| 2.1.3.1 | Can view/cancel other people's bookings (IDOR) | Log in as Alice, open `/bookings/1002` |
+| 2.1.3.2 | No admin role check | Log in as Alice, open `/admin` |
+| 2.1.4.1 | No server-side input validation | Burp: book with `slot_id=1` (yesterday) or a very long note |
+| 2.1.4.2 | SQL injection in the date filter | `/bookings?date=' OR '1'='1` |
+| 2.1.4.3 | Stored XSS in booking notes | Book with `<script>alert('XSS')</script>` as the note, then open `/admin` |
+| 2.1.5 | Error page shows the stack trace | Burp: book with `slot_id=999` |
+| 2.1.6 | No limit on bookings, double booking possible | Burp Intruder on POST /bookings |
+| 2.1.7 | No audit log | Failed logins are not recorded anywhere |
+| 2.1.8.1 | Runs on plain HTTP | Wireshark on the loopback interface while logging in |
+| 2.1.8.2 | Cookie missing HttpOnly/Secure/SameSite, `X-Powered-By` header shown | DevTools > Network |
+| 2.1.9 | No privacy notice | Register page |
 
-## Suggested Git workflow
+## Working on fixes
+
+Make your own branch from `main`, then open a pull request when your part is done:
 
 ```bash
-git init
-git add .
-git commit -m "v1 baseline"
-git tag v1-baseline
+git checkout main
+git pull
+git checkout -b your-name-feature
 ```
-
-Push to a shared GitHub repo. Each member then works on their own branch,
-e.g. `git checkout -b memberA-authentication`, and merges back through a pull request.
-The commit history shows each member's individual contribution for the viva.
