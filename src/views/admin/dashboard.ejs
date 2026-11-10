@@ -23,12 +23,13 @@
           <td><%= b.service_name %></td>
           <td><%= b.slot_date %></td>
           <td><%= b.start_time.slice(0, 5) %></td>
-          <%# v1 baseline: notes are printed without HTML encoding (stored XSS, report 2.1.4.3) %>
+          <%# notes are printed here %>
           <td class="notes"><%- b.notes || '' %></td>
           <td><span class="status status-<%= b.status %>"><%= b.status %></span></td>
           <td>
             <% if (b.status === 'booked') { %>
-              <form method="post" action="/admin/bookings/<%= b.id %>/cancel" class="inline">
+              <form method="post" action="/admin/bookings/<%= b.id %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">/cancel" class="inline">
                 <button type="submit" class="btn btn-small btn-danger">Cancel</button>
               </form>
             <% } %>

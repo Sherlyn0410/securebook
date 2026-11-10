@@ -9,6 +9,8 @@
   </form>
 </div>
 
+<%- include('partials/errors') %>
+
 <% if (bookings.length === 0) { %>
   <p class="empty">No bookings yet. <a href="/slots">Book an appointment</a></p>
 <% } else { %>
@@ -28,7 +30,8 @@
             <td><span class="status status-<%= b.status %>"><%= b.status %></span></td>
             <td>
               <% if (b.status === 'booked') { %>
-                <form method="post" action="/bookings/<%= b.id %>/cancel" class="inline">
+                <form method="post" action="/bookings/<%= b.id %>
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">/cancel" class="inline">
                   <button type="submit" class="btn btn-small btn-danger">Cancel</button>
                 </form>
               <% } %>

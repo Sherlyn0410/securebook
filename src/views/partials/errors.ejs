@@ -1,0 +1,11 @@
+<% if (typeof errors !== 'undefined' && errors.length) { %>
+  <div class="flash flash-error">
+    <% if (errors.length === 1) { %>
+      <%= errors[0] %>
+    <% } else { %>
+      <ul class="error-list">
+        <% errors.forEach(function (e) { %><li><%= e %></li><% }) %>
+      </ul>
+    <% } %>
+  </div>
+<% } %>

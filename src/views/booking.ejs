@@ -15,12 +15,13 @@
     <dt>Name</dt><dd><%= booking.contact_name %></dd>
     <dt>Email</dt><dd><%= booking.contact_email %></dd>
     <dt>Phone</dt><dd><%= booking.contact_phone %></dd>
-    <%# v1 baseline: notes are printed without HTML encoding (stored XSS, report 2.1.4.3) %>
-    <dt>Notes</dt><dd><%- booking.notes || '-' %></dd>
+    <%# C: notes are HTML-encoded, so a script is shown as text, not run %>
+    <dt>Notes</dt><dd><%= booking.notes || '-' %></dd>
   </dl>
 
   <% if (booking.status === 'booked') { %>
-    <form method="post" action="/bookings/<%= booking.id %>/cancel">
+    <form method="post" action="/bookings/<%= booking.id %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">/cancel">
       <button type="submit" class="btn btn-danger">Cancel this booking</button>
     </form>
   <% } %>
