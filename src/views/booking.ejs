@@ -20,8 +20,8 @@
   </dl>
 
   <% if (booking.status === 'booked') { %>
-    <form method="post" action="/bookings/<%= booking.id %>
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">/cancel">
+    <form method="post" action="/bookings/<%= booking.id %>/cancel">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-danger">Cancel this booking</button>
     </form>
   <% } %>

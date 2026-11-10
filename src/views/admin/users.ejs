@@ -17,8 +17,8 @@
           <td><span class="badge"><%= u.role %></span></td>
           <td><%= u.is_active ? 'Active' : 'Deactivated' %></td>
           <td>
-            <form method="post" action="/admin/users/<%= u.id %>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">/toggle" class="inline">
+            <form method="post" action="/admin/users/<%= u.id %>/toggle" class="inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button type="submit" class="btn btn-small btn-ghost"><%= u.is_active ? 'Deactivate' : 'Activate' %></button>
             </form>
           </td>
