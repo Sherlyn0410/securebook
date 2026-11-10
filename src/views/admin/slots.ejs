@@ -49,8 +49,8 @@
           <td><%= s.start_time.slice(0, 5) %> – <%= s.end_time.slice(0, 5) %></td>
           <td><%= s.booked > 0 ? 'Booked' : 'Open' %></td>
           <td>
-            <form method="post" action="/admin/slots/<%= s.id %>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">/delete" class="inline">
+            <form method="post" action="/admin/slots/<%= s.id %>/delete" class="inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button type="submit" class="btn btn-small btn-ghost">Remove</button>
             </form>
           </td>
