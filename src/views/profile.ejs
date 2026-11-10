@@ -2,7 +2,9 @@
 
 <div class="form-card">
   <h1>My profile</h1>
+  <%- include('partials/errors') %>
   <form method="post" action="/profile">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label>Full name
       <input type="text" name="name" value="<%= profile.name %>">
     </label>

@@ -2,8 +2,9 @@
 
 <div class="form-card">
   <h1>Create an account</h1>
-  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
+  <%- include('partials/errors') %>
   <form method="post" action="/register">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label>Full name
       <input type="text" name="name" value="<%= form.name || '' %>" required>
     </label>
@@ -11,10 +12,15 @@
       <input type="email" name="email" value="<%= form.email || '' %>" required>
     </label>
     <label>Phone number
-      <input type="tel" name="phone" value="<%= form.phone || '' %>">
+      <input type="tel" name="phone" value="<%= form.phone || '' %>" placeholder="012-3456789">
     </label>
     <label>Password
-      <input type="password" name="password" required>
+      <input type="password" name="password" minlength="15" maxlength="64" autocomplete="new-password" required>
+      <span class="hint">At least 15 characters. A short sentence is easy to remember.</span>
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="consent" value="yes" required>
+      <span>I have read the <a href="/privacy" target="_blank">privacy notice</a> and agree to SecureBook using my details to manage my appointments.</span>
     </label>
     <button type="submit" class="btn btn-block">Register</button>
   </form>

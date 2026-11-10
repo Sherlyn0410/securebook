@@ -9,6 +9,8 @@
   </form>
 </div>
 
+<%- include('partials/errors') %>
+
 <% if (slots.length === 0) { %>
   <p class="empty">No available slots<%= date ? ' on this date' : '' %>.</p>
 <% } else { %>
@@ -25,6 +27,7 @@
             <td><%= slot.start_time.slice(0, 5) %> – <%= slot.end_time.slice(0, 5) %></td>
             <td colspan="2">
               <form method="post" action="/bookings" class="row-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <input type="hidden" name="slot_id" value="<%= slot.id %>">
                 <input type="text" name="notes" placeholder="Optional">
                 <button type="submit" class="btn btn-small">Book</button>
