@@ -1,3 +1,5 @@
+<% const currentUser = locals.currentUser || null; const flash = locals.flash || null; %>
+<!doctype html>
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,12 +27,14 @@
             <a href="/admin">Dashboard</a>
             <a href="/admin/slots">Schedule</a>
             <a href="/admin/users">Users</a>
+            <a href="/admin/security">Security</a>
           <% } else { %>
             <a href="/slots">Book</a>
             <a href="/bookings">My bookings</a>
           <% } %>
           <a href="/profile">Profile</a>
           <form method="post" action="/logout" class="inline">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="link-button">Log out</button>
           </form>
         <% } else { %>

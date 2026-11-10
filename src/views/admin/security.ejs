@@ -1,0 +1,77 @@
+<%- include('../partials/header') %>
+
+<h1>Security log</h1>
+
+<div class="stats">
+  <div class="stat"><span class="stat-value"><%= summary.failed_logins || 0 %></span><span class="stat-label">Failed logins (24h)</span></div>
+  <div class="stat"><span class="stat-value"><%= summary.lockouts || 0 %></span><span class="stat-label">Account lockouts (24h)</span></div>
+  <div class="stat"><span class="stat-value"><%= summary.access_denied || 0 %></span><span class="stat-label">Access denied (24h)</span></div>
+  <div class="stat"><span class="stat-value"><%= summary.blocked_requests || 0 %></span><span class="stat-label">Blocked requests (24h)</span></div>
+</div>
+
+<div class="two-col">
+  <div class="panel">
+    <h2>Suspicious events, last 7 days</h2>
+    <% const maxTotal = Math.max(1, ...days.map(function (d) { return d.total; })); %>
+    <svg class="bar-chart" viewBox="0 0 420 190" role="img" aria-label="Suspicious events per day">
+      <% days.forEach(function (d, i) { const h = Math.round(d.total / maxTotal * 130); const x = 14 + i * 58; %>
+        <rect x="<%= x %>" y="<%= 150 - h %>" width="40" height="<%= h %>" rx="4" class="bar"></rect>
+        <text x="<%= x + 20 %>" y="<%= 144 - h %>" text-anchor="middle" class="bar-value"><%= d.total %></text>
+        <text x="<%= x + 20 %>" y="172" text-anchor="middle" class="bar-label"><%= d.day.slice(5) %></text>
+      <% }) %>
+      <line x1="8" x2="412" y1="150" y2="150" class="bar-axis"></line>
+    </svg>
+    <p class="muted">Failed logins, lockouts, denied access, CSRF, rate limits and rejected input.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Top IP addresses (24h)</h2>
+    <% if (topIps.length === 0) { %>
+      <p class="muted">No suspicious activity in the last 24 hours.</p>
+    <% } else { %>
+      <table>
+        <thead><tr><th>IP address</th><th>Suspicious events</th></tr></thead>
+        <tbody>
+          <% topIps.forEach(function (row) { %>
+            <tr><td><%= row.ip_address %></td><td><%= row.total %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>
+
+<div class="page-head">
+  <h2>Recent events</h2>
+  <form method="get" action="/admin/security" class="filter">
+    <select name="type">
+      <option value="">All events</option>
+      <% eventTypes.forEach(function (t) { %>
+        <option value="<%= t %>" <%= t === type ? 'selected' : '' %>><%= t %></option>
+      <% }) %>
+    </select>
+    <button type="submit" class="btn btn-small">Filter</button>
+  </form>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Time</th><th>Event</th><th>User</th><th>IP address</th><th>Details</th></tr></thead>
+    <tbody>
+      <% if (events.length === 0) { %>
+        <tr><td colspan="5" class="muted">No events recorded.</td></tr>
+      <% } %>
+      <% events.forEach(function (e) { %>
+        <tr>
+          <td><%= e.created_at %></td>
+          <td><span class="event <%= threatEvents.includes(e.event_type) ? 'event-threat' : '' %>"><%= e.event_type %></span></td>
+          <td><%= e.email || '-' %></td>
+          <td><%= e.ip_address %></td>
+          <td class="notes"><%= e.details %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

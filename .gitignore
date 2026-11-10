@@ -1,4 +1,16 @@
+# Dependencies
 node_modules/
+
+# Environment & secrets
 .env
+
+# TLS certificates (generated locally, never committed)
+certs/
+
+# OS / editor
 .DS_Store
 .idea/
+*.log
+
+# transfer artifact
+_partD.tar.gz

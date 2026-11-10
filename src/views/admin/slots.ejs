@@ -6,6 +6,7 @@
   <div class="form-card flat">
     <h2>Add a time slot</h2>
     <form method="post" action="/admin/slots">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label>Service
         <select name="service_id">
           <% services.forEach(function (s) { %>
@@ -25,6 +26,7 @@
   <div class="form-card flat">
     <h2>Add a service</h2>
     <form method="post" action="/admin/services">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label>Name <input type="text" name="name" required></label>
       <label>Description <input type="text" name="description"></label>
       <label>Duration (minutes) <input type="number" name="duration_min" value="30" min="5" required></label>
@@ -47,7 +49,8 @@
           <td><%= s.start_time.slice(0, 5) %> – <%= s.end_time.slice(0, 5) %></td>
           <td><%= s.booked > 0 ? 'Booked' : 'Open' %></td>
           <td>
-            <form method="post" action="/admin/slots/<%= s.id %>/delete" class="inline">
+            <form method="post" action="/admin/slots/<%= s.id %>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">/delete" class="inline">
               <button type="submit" class="btn btn-small btn-ghost">Remove</button>
             </form>
           </td>
